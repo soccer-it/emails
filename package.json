@@ -1,0 +1,25 @@
+{
+  "name": "soccerit-email",
+  "version": "1.0.0",
+  "description": "soccerit | emails",
+  "author": "@soccerit",
+  "engine": {
+    "node": "10.18.0",
+    "npm": "6.13.4"
+  },
+  "scripts": {
+    "dev": "node_modules/.bin/mjml --watch src/$TEMPLATE/index.mjml -o dest/$TEMPLATE.html",
+    "build": "node_modules/.bin/mjml src/$TEMPLATE/index.mjml --config.minify true > dest/$TEMPLATE.html",
+    "deploy:images": "now --prod",
+    "deploy:template": "TEMPLATE=$TEMPLATE yarn build && node scripts/deployTemplates.js --template=$TEMPLATE"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "minimist": "^1.2.0",
+    "mjml": "4.5.1",
+    "now": "16.7.1",
+    "request": "^2.88.0"
+  }
+}
