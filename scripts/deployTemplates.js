@@ -1,19 +1,20 @@
-const request = require("request");
-const fs = require("fs");
-const argv = require("minimist")(process.argv.slice(2));
-require("dotenv").config();
+require('dotenv').config();
+
+const request = require('request');
+const fs = require('fs');
+const argv = require('minimist')(process.argv.slice(2));
 
 const config = {
-  destDir: "./dest"
+  destDir: './dest'
 };
 
 const currentTemplate = argv.template;
 
 const apiBaseConfig = endpoint => ({
   url: `${process.env.EMAIL_SERVICE_URL}/${endpoint}`,
-  auth: {
-    user: process.env.EMAIL_SERVICE_USER,
-    pass: process.env.EMAIL_SERVICE_PASS
+  headers: {
+    Authorization: `Bearer ${process.env.EMAIL_SERVICE_KEY}`,
+    'Content-Type': 'application/json'
   }
 });
 
@@ -21,7 +22,7 @@ function getCurrentTemplate() {
   return new Promise((resolve, reject) => {
     request.get(
       {
-        ...apiBaseConfig("templates")
+        ...apiBaseConfig('designs')
       },
       function(err, _, body) {
         if (err) {
@@ -30,9 +31,7 @@ function getCurrentTemplate() {
 
         const data = JSON.parse(body);
 
-        const currentTemplateConfig = data.templates.find(
-          ({ name }) => name === currentTemplate
-        );
+        const currentTemplateConfig = data.result.find(({ name }) => name === currentTemplate);
 
         resolve({
           id: currentTemplateConfig && currentTemplateConfig.id
@@ -44,16 +43,16 @@ function getCurrentTemplate() {
 
 function sendTemplate(data, tplId) {
   return new Promise((resolve, reject) => {
-    const tplEndpoint = "templates";
+    const tplEndpoint = 'designs';
     const baseEndpoint = tplId ? `${tplEndpoint}/${tplId}` : tplEndpoint;
 
     request(
       {
         ...apiBaseConfig(baseEndpoint),
-        method: tplId ? "PATCH" : "POST",
+        method: tplId ? 'PATCH' : 'POST',
         body: JSON.stringify({
           name: currentTemplate,
-          html: data
+          html_content: data
         })
       },
       function(err, _, body) {
@@ -72,7 +71,7 @@ function sendTemplate(data, tplId) {
 function createTemplate() {
   return new Promise((resolve, reject) => {
     if (!currentTemplate) {
-      return "Error - Template is not defined!";
+      return 'Error - Template is not defined!';
     }
 
     const templateFile = `${config.destDir}/${currentTemplate}.html`;
@@ -80,7 +79,7 @@ function createTemplate() {
     fs.readFile(
       templateFile,
       {
-        encoding: "utf-8"
+        encoding: 'utf-8'
       },
       function(err, data) {
         if (err) {

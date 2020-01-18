@@ -4,7 +4,7 @@
       <mj-column>
         <mj-image width="100px" src="https://email.soccerit.com.br/emailImages/logo-soccerit.png"></mj-image>
         <mj-divider border-color="#232323"></mj-divider>
-        <mj-text font-size="20px" color="#232323" font-family="helvetica">Ola! *|FNAME|*</mj-text>
+        <mj-text font-size="20px" color="#232323" font-family="helvetica">Ola! -customerName-</mj-text>
       </mj-column>
     </mj-section>
   </mj-body>
